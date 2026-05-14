@@ -1,0 +1,26 @@
+[Unit]
+Description=ConvertSoon Background Worker %i
+After=network.target redis-server.service
+
+[Service]
+# User සහ Group එක busan/www-data විදියට හැදුවා
+User=busan
+Group=www-data
+
+WorkingDirectory=/var/www/ConvertSoon
+
+Environment="PATH=/var/www/ConvertSoon/venv/bin:/usr/bin:/usr/local/bin"
+Environment="TEMP_DIR=/var/www/ConvertSoon_data"
+Environment="POPPLER_PATH=/usr/bin"
+
+# Start Command (Conversion Worker Run කිරීම)
+ExecStart=/var/www/ConvertSoon/venv/bin/python -m app.workers.conversion_worker
+
+# %i කියන්නේ worker අංකය (1, 2, 3...)
+StandardOutput=append:/var/www/ConvertSoon/logs/worker-%i.log
+StandardError=append:/var/www/ConvertSoon/logs/worker-%i.log
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

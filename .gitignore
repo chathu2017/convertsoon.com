@@ -1,0 +1,7 @@
+data/
+geo-location/
+__pycache__/
+*.env
+.env
+*.pdf
+*.docx

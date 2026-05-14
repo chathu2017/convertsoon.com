@@ -1,0 +1,23 @@
+[Unit]
+Description=Gunicorn instance to serve ConvertSoon
+After=network.target
+
+[Service]
+# User සහ Group එක busan/www-data විදියට හැදුවා
+User=busan
+Group=www-data
+
+WorkingDirectory=/var/www/ConvertSoon
+
+Environment="PATH=/var/www/ConvertSoon/venv/bin"
+Environment="TEMP_DIR=/var/www/ConvertSoon_data"
+# Gunicorn Web Workers (API Requests handle කරන්න)
+Environment="WORKER_COUNT=3"
+
+# Start Command
+ExecStart=/var/www/ConvertSoon/venv/bin/gunicorn --workers 3 --timeout 300  --bind 127.0.0.1:8000 -k uvicorn.workers.UvicornWorker app.main:app --access-logfile /var/www/ConvertSoon/logs/web.log --error-logfile /var/www/ConvertSoon/logs/web.log --capture-output --forwarded-allow-ips="127.0.0.1"
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

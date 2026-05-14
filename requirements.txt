@@ -1,0 +1,83 @@
+# FileConverter Dependencies
+python-docx
+
+# VIPS for Image Processing
+pyvips
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+jinja2>=3.1.0
+aiofiles>=23.2.0
+
+# Rate Limiting
+fastapi-limiter>=0.1.6
+
+# Legacy OCR (Tesseract)
+pytesseract
+
+# Redis
+redis>=5.0.0
+
+# Image Processing
+Pillow>=10.0.0
+img2pdf>=0.5.0
+pillow-heif>=0.15.0
+vtracer>=0.6.0
+
+# PDF Tools
+pypdf>=3.17.0
+pdf2image>=1.17.0
+
+# Excel Tools
+openpyxl
+pandas
+pdfplumber
+
+# SVG Support
+cairosvg>=2.7.1
+
+# PDF to Docx (Digital PDF)
+pdf2docx>=0.5.6
+
+# Video/GIF Tools
+ffmpeg-python>=0.2.0
+
+# System Monitoring
+psutil>=5.9.0
+
+# Validation
+pydantic>=2.6.0
+pydantic-settings>=2.1.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# Production Server
+gunicorn>=21.2.0
+uvloop>=0.19.0
+httptools>=0.6.1
+
+# Blog Engine
+markdown==3.5.2
+python-frontmatter==1.1.0
+
+# GeoIP2 for Geolocation
+geoip2
+httpx
+
+# --- NEW: Hybrid AI Pipeline Dependencies ---
+# Layout Parsing (The "Eyes")
+layoutparser
+opencv-python-headless
+
+# Python Libraries
+docxcompose
+PyPDF2
+
+# Azure Open AI (The "Brain")
+openai
+python-dotenv
+
+# Note: Detectron2 is installed manually via CLI

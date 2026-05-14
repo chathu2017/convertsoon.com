@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<article class="single-post">
+    <header class="post-header">
+        <div class="container post-container">
+            <a href="/blog" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back to Blog
+            </a>
+            
+            <h1 class="post-title">{{ post.title }}</h1>
+            
+            <div class="post-meta">
+                <div class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    {{ post.date.strftime('%B %d, %Y') }}
+                </div>
+                <div class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    {{ post.author }}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="post-image-wrapper container post-container">
+        <img src="{{ post.image if post.image else '/static/images/default-blog.jpg' }}" 
+             alt="{{ post.title }}" class="post-featured-image">
+    </div>
+
+    <div class="post-body container post-container">
+        {{ post.content | safe }}
+    </div>
+
+    <footer class="post-footer container post-container">
+        <div class="share-box">
+            <h3>Share this article</h3>
+            <div class="share-links">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://convertsoon.com/blog/{{ post.slug }}" target="_blank" rel="noopener" class="share-btn fb">Facebook</a>
+                <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url=https://convertsoon.com/blog/{{ post.slug }}" target="_blank" rel="noopener" class="share-btn tw">Twitter</a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://convertsoon.com/blog/{{ post.slug }}" target="_blank" rel="noopener" class="share-btn li">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+</article>
+
+{% endblock %}

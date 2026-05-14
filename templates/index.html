@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W2DZ19SYTN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W2DZ19SYTN');
+    </script>
+
+    <script>
+    (function() {
+        try {
+            const localTheme = localStorage.getItem('theme');
+            const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (localTheme === 'dark' || (!localTheme && supportDarkMode)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <meta name="description" content="{{ meta_description }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ canonical_url }}" />
+    <meta property="og:title" content="{{ page_title }}" />
+    <meta property="og:description" content="{{ meta_description }}" />
+    <meta property="og:image" content="https://convertsoon.com/static/images/social-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title }}">
+    <meta name="twitter:description" content="{{ meta_description }}">
+    <meta name="twitter:image" content="https://convertsoon.com/static/images/social-card.png">
+
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/images/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/static/images/icon-192.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/pages.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ConvertSoon",
+      "url": "https://convertsoon.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://convertsoon.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "ConvertSoon",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://convertsoon.com/static/images/icon-512.png",
+          "width": 512,
+          "height": 512
+        }
+      }
+    }
+    </script>
+</head>
+<body data-pre-select="{{ pre_select_format }}">
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <img src="/static/images/logo.png" alt="ConvertSoon Logo" class="logo-icon">
+                <span class="logo-text">ConvertSoon</span>
+            </a>
+
+            <nav class="nav" id="mainNav">
+                <div class="nav-item">
+                    <div class="nav-link">
+                        PDF Tools
+                        <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="/pdf/merge-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7v10M16 7v10M12 7v10"/></svg>
+                            <span class="dd-title">Merge PDF</span>
+                        </a>
+                        <a href="/pdf/split-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                            <span class="dd-title">Split PDF</span>
+                        </a>
+                        <a href="/pdf/compress-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/></svg>
+                            <span class="dd-title">Compress PDF</span>
+                        </a>
+                        <a href="/pdf/organize-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            <span class="dd-title">Organize PDF</span>
+                        </a>
+                        <a href="/pdf/protect-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <span class="dd-title">Protect PDF</span>
+                        </a>
+
+                        <a href="/pdf/unlock-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                            </svg>
+                            <span class="dd-title">Unlock PDF</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <div class="nav-link">
+                        Image Converters
+                        <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="dropdown-menu" style="min-width: 280px;">
+                        <a href="/" class="dropdown-link" style="background: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid var(--color-accent); margin-bottom: 8px;">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="url(#magicGradient)" stroke-width="2">
+                                <defs>
+                                    <linearGradient id="magicGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#6366f1" />
+                                        <stop offset="100%" style="stop-color:#a855f7" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                            <div class="dd-text">
+                                <span class="dd-title" style="background: linear-gradient(to right, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Auto Detect Format ✨</span>
+                                <span class="dd-desc">Convert Any Image (GIF, BMP, TIFF...)</span>
+                            </div>
+                        </a>
+                        <div style="padding: 8px 12px 4px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">From JPG</div>
+
+                        <a href="/convert/jpg-to-png" class="dropdown-link"><span class="dd-title">JPG to PNG</span></a>
+                        <a href="/convert/jpg-to-pdf" class="dropdown-link"><span class="dd-title">JPG to PDF</span></a>
+                        <a href="/convert/jpg-to-webp" class="dropdown-link"><span class="dd-title">JPG to WEBP</span></a>
+                        <div style="padding: 12px 12px 4px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-top: 1px solid var(--color-border); margin-top: 4px;">From HEIC</div>
+                        <a href="/convert/heic-to-jpg" class="dropdown-link"><span class="dd-title">HEIC to JPG</span></a>
+
+                        <div style="padding: 12px 12px 4px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-top: 1px solid var(--color-border); margin-top: 4px;">From PNG</div>
+                        <a href="/convert/png-to-jpg" class="dropdown-link"><span class="dd-title">PNG to JPG</span></a>
+                        <a href="/convert/png-to-svg" class="dropdown-link"><span class="dd-title">PNG to SVG</span></a>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <div class="nav-link">
+                        Documents
+                        <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="/convert/pdf-to-word" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span class="dd-title">PDF to Word</span>
+                        </a>
+                        <a href="/convert/word-to-pdf" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <span class="dd-title">Word to PDF</span>
+                        </a>
+                        <a href="/convert/pdf-to-excel" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="8" y1="13" x2="16" y2="13"></line>
+                                <line x1="8" y1="17" x2="16" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span class="dd-title">PDF to Excel</span>
+                        </a>
+                        <a href="/convert/pdf-to-jpg" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <span class="dd-title">PDF to JPG</span>
+                        </a>
+                        <a href="/convert/pdf-to-png" class="dropdown-link">
+                            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <span class="dd-title">PDF to PNG</span>
+                        </a>
+                    </div>
+                </div>
+                <a href="/blog" class="nav-link" style="color: var(--color-text-primary);">Blog</a>
+                <a href="/about" class="nav-link">About Us</a>
+            </nav>
+
+            <div class="header-controls">
+                <button class="theme-btn" id="themeToggle">
+                    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+
+                <button class="mobile-toggle" id="mobileMenuBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <h1 class="hero-title">{{ h1_text }}</h1>
+                <p class="hero-subtitle">{{ h2_text }}</p>
+                <div class="security-badge-container">
+                    <div class="security-promise">
+                        <svg class="pulsing-lock-intense" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+
+                        <span>Files are 100% Safe. Encrypted & Automatically Deleted.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="upload-section">
+                <form id="uploadForm" class="upload-form">
+                    <div class="dropzone" id="dropzone">
+                        <div class="dropzone-content">
+                            <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p class="dropzone-text">Drop your files here</p>
+                            <button type="button" class="btn-upload">Select Files</button>
+                            <p class="dropzone-hint">JPG, PNG, PDF, DOCX, SVG...</p>
+                            <p class="dropzone-limit" style="font-size: 0.9em; opacity: 0.7; margin-top: 5px;">
+    Max upload size: 50 MB | Max files: 10</p>
+                        </div>
+                        <input type="file" id="fileInput" name="file" class="file-input" multiple>
+                    </div>
+
+                    <div id="fileListArea" style="display: none;">
+                        <div class="file-list-header">
+                            <h3 class="list-title">Selected Files</h3>
+                            <div class="header-actions">
+                                <button type="button" id="clearAllBtn" class="clear-all-btn">Clear All</button>
+                            </div>
+                        </div>
+                        <div class="file-list" id="fileList"></div>
+                    </div>
+
+                    <div class="options-section" id="optionsSection" style="display: none;">
+                        <div class="option-group">
+                            <span class="option-label">Output Format</span>
+                            <div class="format-grid" id="formatGrid"></div>
+                        </div>
+
+                        <button type="button" class="options-toggle" id="optionsToggle">
+                            <span>Advanced Options</span>
+                            <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+
+                        <div class="advanced-options" id="advancedOptions" style="display: none;">
+                            <div id="vectorOptions" style="display: none; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                                <h4 style="margin: 0 0 1rem 0; color: var(--color-accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Vector Settings</h4>
+                                <div class="options-grid">
+                                    <div class="option-item">
+                                        <label class="option-label" for="vectorMode">Color Mode</label>
+                                        <select name="vector_mode" id="vectorMode" class="option-select">
+                                            <option value="color">Colored (VTracer)</option>
+                                            <option value="binary">Black & White (Potrace)</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-item">
+                                        <label class="option-label" for="clustering">Clustering</label>
+                                        <select name="clustering" id="clustering" class="option-select">
+                                            <option value="stacked">Stacked</option>
+                                            <option value="cutout">Cutout</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-item">
+                                        <div class="range-container">
+                                            <label class="option-label" for="colorPrecision">Color Precision</label>
+                                            <span class="range-value" id="val-precision">6</span>
+                                        </div>
+                                        <input type="range" id="colorPrecision" name="color_precision" class="option-range" min="1" max="8" value="6" oninput="document.getElementById('val-precision').textContent = this.value">
+                                    </div>
+                                    <div class="option-item">
+                                        <div class="range-container">
+                                            <label class="option-label" for="filterSpeckle">Filter Speckle</label>
+                                            <span class="range-value" id="val-speckle">4</span>
+                                        </div>
+                                        <input type="range" id="filterSpeckle" name="filter_speckle" class="option-range" min="0" max="16" value="4" oninput="document.getElementById('val-speckle').textContent = this.value">
+                                    </div>
+                                    <div class="option-item">
+                                        <div class="range-container">
+                                            <label class="option-label" for="cornerThreshold">Corner Threshold</label>
+                                            <span class="range-value" id="val-corner">60</span>
+                                        </div>
+                                        <input type="range" id="cornerThreshold" name="corner_threshold" class="option-range" min="0" max="180" value="60" oninput="document.getElementById('val-corner').textContent = this.value">
+                                    </div>
+                                    <div class="option-item">
+                                        <label class="option-label" for="curveFitting">Curve Fitting</label>
+                                        <select name="curve_fitting" id="curveFitting" class="option-select">
+                                            <option value="spline">Spline</option>
+                                            <option value="polygon">Polygon</option>
+                                            <option value="pixel">Pixel</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="standardOptions" class="options-grid">
+                                <div class="option-item" id="compressionLevelOption">
+                                    <label for="compressionLevel" class="option-label">Compression Level</label>
+                                    <select id="compressionLevel" name="compression_level" class="option-select">
+                                        <option value="low">Low (Best Quality)</option>
+                                        <option value="medium" selected>Medium (Balanced)</option>
+                                        <option value="high">High (Smaller Size)</option>
+                                        <option value="maximum">Maximum (Smallest)</option>
+                                    </select>
+                                </div>
+                                <div class="option-item" id="maxDimensionOption">
+                                    <label for="maxDimension" class="option-label">Max Size (px)</label>
+                                    <select id="maxDimension" name="max_dimension" class="option-select">
+                                        <option value="">Original Size</option>
+                                        <option value="3840">4K (3840px)</option>
+                                        <option value="1920">Full HD (1920px)</option>
+                                        <option value="1280">HD (1280px)</option>
+                                        <option value="800">Web (800px)</option>
+                                    </select>
+                                </div>
+                                <div class="option-item" id="qualityOption">
+                                    <label for="quality" class="option-label">Quality (%)</label>
+                                    <div class="range-container">
+                                        <input type="range" id="quality" name="quality" class="option-range" value="85" min="1" max="100">
+                                        <span class="range-value" id="qualityValue">85%</span>
+                                    </div>
+                                </div>
+                                <div class="option-item">
+                                    <label for="dpi" class="option-label">Resolution (DPI)</label>
+                                    <input type="number" id="dpi" name="dpi" class="option-input" value="150" min="72" max="600" step="1">
+                                </div>
+                                <div class="option-item">
+                                    <label for="width" class="option-label">Width (px)</label>
+                                    <input type="number" id="width" name="width" class="option-input" placeholder="Auto" min="1" max="10000">
+                                </div>
+                                <div class="option-item">
+                                    <label for="height" class="option-label">Height (px)</label>
+                                    <input type="number" id="height" name="height" class="option-input" placeholder="Auto" min="1" max="10000">
+                                </div>
+                                <div class="option-item" id="bgColorOption">
+                                    <label for="bgColor" class="option-label">Background Color</label>
+                                    <div class="color-input-wrapper">
+                                        <input type="color" id="bgColor" name="background_color" class="color-input" value="#FFFFFF">
+                                        <input type="text" id="bgColorText" class="option-input color-text" value="#FFFFFF" pattern="^#[0-9A-Fa-f]{6}$">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="convert-btn" id="convertBtn">
+                            <span class="btn-text">Convert All Files</span>
+                            <span class="btn-loader" style="display: none;">
+                                <svg class="spinner" viewBox="0 0 24 24">
+                                    <circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3"></circle>
+                                </svg>
+                                <span class="btn-status">Processing...</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tools-grid-section">
+                <h2 class="tools-grid-title">Image Converters</h2>
+                
+                <div class="tools-grid-container">
+                    
+                    <a href="/" class="tool-card" style="--card-color: #8E44AD; --card-bg-hover: rgba(142, 68, 173, 0.08); --card-shadow: rgba(142, 68, 173, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Auto Detect ✨</h3>
+                            <p>Convert Any Image (GIF, BMP, TIFF...)</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/jpg-to-png" class="tool-card" style="--card-color: #F39C12; --card-bg-hover: rgba(243, 156, 18, 0.08); --card-shadow: rgba(243, 156, 18, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>JPG to PNG</h3>
+                            <p>Convert JPG images to transparent PNGs.</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/jpg-to-pdf" class="tool-card" style="--card-color: #E5322D; --card-bg-hover: rgba(229, 50, 45, 0.08); --card-shadow: rgba(229, 50, 45, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>JPG to PDF</h3>
+                            <p>Turn your images into PDF documents.</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/jpg-to-webp" class="tool-card" style="--card-color: #28A745; --card-bg-hover: rgba(40, 167, 69, 0.08); --card-shadow: rgba(40, 167, 69, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>JPG to WEBP</h3>
+                            <p>Optimize images for faster web loading.</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/heic-to-jpg" class="tool-card" style="--card-color: #2B579A; --card-bg-hover: rgba(43, 87, 154, 0.08); --card-shadow: rgba(43, 87, 154, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>HEIC to JPG</h3>
+                            <p>Convert iPhone photos to standard JPG.</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/png-to-jpg" class="tool-card" style="--card-color: #D946EF; --card-bg-hover: rgba(217, 70, 239, 0.08); --card-shadow: rgba(217, 70, 239, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>PNG to JPG</h3>
+                            <p>Reduce file size by converting to JPG.</p>
+                        </div>
+                    </a>
+
+                    <a href="/convert/png-to-svg" class="tool-card" style="--card-color: #0EA5E9; --card-bg-hover: rgba(14, 165, 233, 0.08); --card-shadow: rgba(14, 165, 233, 0.4);">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                        </div>
+                        <div class="tool-info">
+                            <h3>PNG to SVG</h3>
+                            <p>Trace images into scalable vectors.</p>
+                        </div>
+                    </a>
+
+                </div>
+            </section>
+
+            <section class="promo-section" style="margin-top: 3rem;">
+                <div class="ai-clean-card">
+                    <div class="ai-card-info">
+                        <div class="ai-badge-clean">
+                            <span class="dot-pulse"></span>
+                            <span>POWERED BY AZURE OPENAI</span>
+                        </div>
+
+                        <h3>AI PDF to Word & Excel</h3>
+
+                        <p>Don't just convert—understand. Use AI to extract tables, text, and layouts into editable Docx/Xlsx files instantly.</p>
+                    </div>
+
+                    <div class="ai-card-btn">
+                        <a href="/convert/pdf-to-word" class="clean-ai-btn">
+                            Try Free AI Converter
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="how-to-section">
+                <div class="section-header">
+                    <h2>{{ howto_title }}</h2>
+                    <p>Batch convert images and documents in 3 simple steps.</p>
+                </div>
+
+                <div class="how-to-grid">
+                    <div class="guide-card">
+                        <div class="step-badge">1</div>
+                        <h3>Upload Files</h3>
+                        <p>{{ howto_step1 | safe }}</p>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="step-badge">2</div>
+                        <h3>Customize</h3>
+                        <p>{{ howto_step2 | safe }}</p>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="step-badge">3</div>
+                        <h3>Convert & Download</h3>
+                        <p>{{ howto_step3 | safe }}</p>
+                    </div>
+
+                    <div class="guide-card action-card">
+                        <div class="step-icon">📄</div>
+                        <h3>Manage PDFs?</h3>
+                        <p>Need to <strong>Merge</strong>, <strong>Split</strong>, or <strong>Compress</strong> PDF files? Switch to our advanced PDF toolkit.</p>
+                        <a href="/pdf-tools" class="guide-btn">Go to PDF Tools</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq-section" style="max-width: 800px; margin: 4rem auto; padding: 0 1rem;">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Frequently Asked Questions</h2>
+
+            <div class="faq-container">
+                {% if dynamic_faqs %}
+                    {% for faq in dynamic_faqs %}
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            {{ faq.q | safe }}
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>{{ faq.a | safe }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Is there really no daily limit on free conversions?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>That's correct! Unlike other tools that restrict you to 2 files per day, ConvertSoon offers <strong>True Unlimited Access</strong>. You can convert as many PDF, Word, or Image files as you need—24/7. No hourly limits, no "credits," and absolutely <strong>no paywalls</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How does the AI Engine handle PDF to Word formatting?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our proprietary <strong>AI-Powered Conversion Engine</strong> is trained to recognize complex layouts, fonts, and images. When you convert <strong>PDF to Word (DOCX)</strong>, the document structure stays intact, making it fully editable without the hassle of fixing broken formatting.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I convert PDF tables to editable Excel spreadsheets?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Our intelligent data extraction tool pulls tables directly from PDF documents and converts them into <strong>clean, organized Microsoft Excel (XLSX) spreadsheets</strong>. Perfect for financial reports, invoices, and data analysis.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I convert low-quality images to HD Vectors (SVG)?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely. Our <strong>Smart Vectorizer</strong> transforms raster images (JPG/PNG) into scalable, high-quality <strong>SVG Vectors</strong>. This allows you to resize logos and graphics infinitely for print or web without any loss of quality or pixelation.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I process multiple files in bulk?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Boost your productivity by uploading up to <strong>10 files simultaneously</strong>. Whether it's merging PDFs or converting images, our high-speed cloud servers process batch jobs in parallel, delivering your files instantly.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Does it support iPhone HEIC photos and Mobile devices?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! ConvertSoon is fully optimized for mobile. You can easily <strong>convert iPhone HEIC photos to JPG</strong> or handle PDFs directly from your Android or iOS device browser. No app installation required.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How secure is my confidential data?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Your security is our top priority. We use bank-grade <strong>256-bit SSL encryption</strong> for all transfers. Plus, our system is designed to <strong>automatically permanently delete</strong> all uploaded files from our servers after 30 minutes. We never view or store your data.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Are there any hidden fees or watermarks?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No. We believe in transparency. There are <strong>no watermarks</strong> on your converted files, no sign-up forms, and no credit card requirements. ConvertSoon is free for everyone.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What if I need help or a conversion fails?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We've got your back! If you encounter any issues, simply <strong>open the Live Chat</strong> widget at the bottom right of the screen. Our support team is ready to assist you instantly with any questions or technical needs.</p>
+                    </div>
+                </div>
+            </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+    <div class="footer-container">
+        <div class="footer-top">
+
+            <div class="footer-brand-col">
+                <a href="/" class="footer-logo">
+                    <img src="/static/images/logo.png" alt="ConvertSoon Logo" class="logo-icon">
+                    <span class="logo-text">ConvertSoon</span>
+                </a>
+                <p class="footer-description">
+                    Experience <strong>unlimited, AI-enhanced</strong> file conversions. Convert PDF, Word, Excel, and Images instantly with <strong>No Daily Limits</strong>. Next-gen intelligence powered by <strong>Azure OpenAI</strong>.
+                </p>
+                <div class="footer-badge">
+                    <div class="ms-defender-badge">
+                        <svg class="glowing-shield" viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 2Z" fill="#0078D4"/>
+                            <path d="M12 2V11.0001H4.00012C4.05012 15.6001 7.29012 19.8901 12 21.9001V23C6.84 21.74 3 16.55 3 11V5L12 2Z" fill="#005A9E"/>
+                        </svg>
+                        <div class="ms-defender-text">
+                            <span class="ms-defender-label">Secured By</span>
+                            <span class="ms-defender-name">Microsoft Defender</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-links-col">
+                <div class="link-group">
+                    <span class="link-heading">Tools</span>
+                    <a href="/pdf-tools">PDF Tools</a>
+                    <a href="/">Image Converter</a>
+                </div>
+                <div class="link-group">
+                    <span class="link-heading">Company</span>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/blog">Articles</a>
+                </div>
+                <div class="link-group">
+                    <span class="link-heading">Legal</span>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-bottom">
+            <p class="copyright-text">&copy; 2025-2026 ConvertSoon. All rights reserved.</p>
+            <div class="dev-credit">
+                <span>Built with</span>
+                <span class="heart-icon">❤️</span>
+                <span>by</span>
+                <a href="https://niwantha.me" target="_blank" rel="noopener" class="niwantha-link">
+                    Niwantha.me
+                </a>
+            </div>
+        </div>
+    </div>
+    </footer>
+    <script src="/static/js/app.js"></script>
+    <script>
+    // --- MODERN MOBILE MENU LOGIC ---
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle Menu
+    if(mobileBtn) {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop click from closing immediately
+            mainNav.classList.toggle('active');
+        });
+    }
+
+    // Close Menu When Clicking Outside
+    document.addEventListener('click', (e) => {
+        if (mainNav.classList.contains('active') && !mainNav.contains(e.target) && e.target !== mobileBtn) {
+            mainNav.classList.remove('active');
+        }
+    });
+
+    // Dropdown Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                // Prevent closing menu when clicking dropdown
+                e.stopPropagation();
+                this.classList.toggle('active');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="content-section blog-hero">
+    <div class="container" style="text-align: center; padding: 4rem 1rem 3rem;">
+        <h1 class="page-title">Latest Articles & Guides</h1>
+        <p class="page-subtitle" style="max-width: 600px; margin: 0 auto; color: var(--color-text-muted);">
+            Discover tutorials, tech tips, and insights on file conversion, PDF management, and cloud technologies.
+        </p>
+    </div>
+</section>
+
+<div class="page-content">
+    
+    {% if posts %}
+        <div class="blog-grid">
+            {% for post in posts %}
+            <article class="blog-card">
+                <a href="/blog/{{ post.slug }}" class="blog-card-link">
+                    <div class="blog-card-image-wrapper">
+                        <img src="{{ post.image if post.image else '/static/images/default-blog.jpg' }}" 
+                             alt="{{ post.title }}" class="blog-card-img" loading="lazy">
+                        <div class="blog-card-overlay"></div>
+                    </div>
+                    
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                {{ post.date.strftime('%b %d, %Y') }}
+                            </span>
+                            <span class="blog-author">{{ post.author }}</span>
+                        </div>
+                        
+                        <h2 class="blog-title">{{ post.title }}</h2>
+                        <p class="blog-desc">{{ post.description }}</p>
+                        
+                        <div class="blog-footer">
+                            <span class="read-more-btn">Read Article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state" style="text-align: center; padding: 5rem 1rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🚀</div>
+            <h3 style="font-size: 1.5rem; color: var(--color-text-primary);">Coming Soon!</h3>
+            <p style="color: var(--color-text-muted);">We are writing amazing content for you. Check back later.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

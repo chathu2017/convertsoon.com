@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConvertSoon | Command Center</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/js/jsvectormap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0f172a',
+                        darker: '#020617',
+                        card: '#1e293b',
+                        primary: '#3b82f6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'fade-out': 'fadeOut 0.5s ease-in forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeOut: {
+                            '0%': { opacity: '1' },
+                            '100%': { opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Modern Scrollbar */
+        .terminal-scroll::-webkit-scrollbar { width: 6px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .terminal-scroll::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Premium Glassmorphism */
+        .glass {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 0.375rem;
+            color: transparent !important;
+            user-select: none;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10b981;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #10b981;
+        }
+        
+        /* Map Tooltip Customization */
+        .jvm-tooltip {
+            background-color: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #fff;
+            padding: 0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        /* Active Log Box Animation (Glow Effect) */
+        .active-log-glow {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
+            transform: scale(1.01);
+            transition: all 0.3s ease-in-out;
+            z-index: 10;
+        }
+
+        /* Toast Container */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body class="bg-[#050505] text-gray-200 font-sans antialiased overflow-hidden selection:bg-primary selection:text-white">
+
+    <div id="toast-container"></div>
+
+    <input type="hidden" id="admin-url-base" value="/{{ admin_url }}">
+
+    <div class="flex h-screen relative">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+            <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px]"></div>
+        </div>
+
+        <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-72 bg-darker/90 border-r border-white/5 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="h-20 flex items-center justify-center border-b border-white/5 relative">
+                <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                        <i class="fa-solid fa-bolt text-sm"></i>
+                    </span>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">ConvertSoon</span>
+                </h1>
+                <button onclick="toggleSidebar()" class="absolute right-4 md:hidden text-gray-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+                <div class="px-2 mb-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Main Menu</div>
+                
+                <a href="#" class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-xl border border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all">
+                    <i class="fa-solid fa-chart-line w-5 mr-3"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                
+                <a href="#logs-section" class="flex items-center px-4 py-3 text-gray-400 hover:text-gray-100 hover:bg-white/5 rounded-xl transition-all group">
+                    <i class="fa-solid fa-terminal w-5 mr-3 group-hover:text-primary transition-colors"></i>
+                    <span>System Logs</span>
+                </a>
+                
+                <a href="/" target="_blank" class="flex items-center px-4 py-3 text-gray-400 hover:text-gray-100 hover:bg-white/5 rounded-xl transition-all group">
+                    <i class="fa-solid fa-earth-asia w-5 mr-3 group-hover:text-success transition-colors"></i>
+                    <span>Visit Site</span>
+                </a>
+
+                <div class="mt-8 px-2 mb-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Settings</div>
+                
+                <div class="px-2 mb-4">
+                    <label class="text-[10px] text-gray-500 font-bold uppercase mb-1 block ml-1">Active Node</label>
+                    <div class="relative">
+                        <select id="node-selector" onchange="switchNode()" class="w-full bg-white/5 text-gray-300 text-xs rounded-lg px-3 py-2 border border-white/10 focus:outline-none focus:border-primary appearance-none cursor-pointer hover:bg-white/10 transition">
+                            <option value="local">🟢 Local Node (Current)</option>
+                            <option value="remote">🔵 Remote Node (Linked)</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:text-gray-300 hover:bg-white/5 rounded-xl transition-all opacity-70 cursor-not-allowed">
+                    <i class="fa-solid fa-server w-5 mr-3"></i>
+                    <span>Server Config</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-white/5 bg-black/20 backdrop-blur-md">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center font-bold text-sm text-gray-300">
+                            AD
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold truncate w-28 text-white">{{ username }}</p>
+                            <p class="text-[10px] text-green-400 flex items-center gap-1.5 font-medium uppercase tracking-wide">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Online
+                            </p>
+                        </div>
+                    </div>
+                    <a href="/logout" class="p-2.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            
+            <header class="h-20 glass flex items-center justify-between px-6 z-30 sticky top-0 border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 text-gray-300 hover:bg-white/10 rounded-lg transition">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-lg font-semibold text-white tracking-tight">System Overview</h2>
+                        <p id="monitoring-label" class="text-xs text-gray-500 hidden md:block flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> 
+                            Monitoring: <span class="text-gray-300 font-mono">Localhost</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <span class="text-[10px] text-gray-500 font-bold tracking-wider block mb-0.5">LAST SYNC</span>
+                        <span class="text-xs text-primary font-mono bg-primary/10 px-2 py-1 rounded border border-primary/20" id="last-updated">Connecting...</span>
+                    </div>
+
+                    <button onclick="triggerBlogRefresh()" id="btn-blog-refresh" class="flex items-center gap-2 px-3 py-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 rounded-lg transition-all text-xs font-bold uppercase tracking-wider group ml-4">
+                        <i id="icon-blog-refresh" class="fa-solid fa-arrows-rotate group-hover:rotate-180 transition-transform duration-700"></i>
+                        <span class="hidden sm:inline">Refresh Blog</span>
+                    </button>
+
+                    <button onclick="refreshAll()" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex items-center justify-center transition-all active:scale-95 shadow-[0_0_15px_rgba(59,130,246,0.2)]" title="Refresh Stats">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 terminal-scroll scroll-smooth">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    
+                    <div class="glass glass-card-hover p-6 rounded-2xl border-l-[3px] border-primary relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Jobs (30 Days)</p>
+                            <h3 class="text-3xl font-bold text-white skeleton h-10 w-28 rounded-md" id="stat-total"></h3>
+                            <p class="text-[10px] text-gray-500 mt-3 font-medium bg-black/20 inline-block px-2 py-1 rounded">Past 30 Days Activity</p>
+                        </div>
+                    </div>
+
+                    <div class="glass glass-card-hover p-6 rounded-2xl border-l-[3px] border-success relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+                            <i class="fa-solid fa-calendar-day text-6xl text-success"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Jobs Today</p>
+                            <h3 class="text-3xl font-bold text-success skeleton h-10 w-20 rounded-md" id="stat-today"></h3>
+                            <p class="text-[10px] text-gray-500 mt-3 font-medium bg-black/20 inline-block px-2 py-1 rounded">Since midnight UTC</p>
+                        </div>
+                    </div>
+
+                    <div class="glass glass-card-hover p-6 rounded-2xl border-l-[3px] border-danger relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+                            <i class="fa-solid fa-triangle-exclamation text-6xl text-danger"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Failed (24h)</p>
+                            <h3 class="text-3xl font-bold text-danger skeleton h-10 w-16 rounded-md" id="stat-failed"></h3>
+                            <p class="text-[10px] text-gray-500 mt-3 font-medium bg-black/20 inline-block px-2 py-1 rounded">Requires attention</p>
+                        </div>
+                    </div>
+
+                    <div class="glass glass-card-hover p-6 rounded-2xl border-l-[3px] border-warning relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+                            <i class="fa-solid fa-server text-6xl text-warning"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">System Health</p>
+                            <h3 class="text-2xl font-bold text-warning skeleton h-10 w-32 rounded-md" id="stat-status"></h3>
+                            <div class="w-full bg-gray-800/50 h-1.5 rounded-full mt-4 overflow-hidden">
+                                <div id="cpu-mini-bar" class="bg-warning h-1.5 rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(245,158,11,0.5)]" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass p-6 rounded-2xl lg:col-span-2">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-white">Conversion Trend</h3>
+                            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded border border-primary/20">Last 7 Days</span>
+                        </div>
+                        <div class="relative h-72 w-full skeleton rounded-xl bg-white/5" id="trendChartContainer">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="text-lg font-semibold text-white mb-6">Job Distribution</h3>
+                        <div class="relative h-72 w-full flex justify-center skeleton rounded-xl bg-white/5" id="typeChartContainer">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-earth-americas text-primary"></i> Live Visitor Map
+                            <span class="text-xs text-gray-500 font-normal ml-2 font-mono">(<span id="map-total-visitors" class="text-white font-bold">0</span> active)</span>
+                        </h3>
+                        <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                            </span>
+                            <span class="text-xs font-bold text-green-400 uppercase tracking-wide">Real-time</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 text-center hover:bg-white/10 transition duration-300">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">24 Hours</p>
+                            <h4 class="text-2xl font-bold text-white mt-1" id="vis-daily">0</h4>
+                        </div>
+                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 text-center hover:bg-white/10 transition duration-300">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">7 Days</p>
+                            <h4 class="text-2xl font-bold text-primary mt-1" id="vis-weekly">0</h4>
+                        </div>
+                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 text-center hover:bg-white/10 transition duration-300">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Last 30 Days</p>
+                            <h4 class="text-2xl font-bold text-purple-400 mt-1" id="vis-monthly">0</h4>
+                        </div>
+                    </div>
+
+                    <div id="map-container" class="skeleton rounded-xl w-full h-[350px] bg-white/5 border border-white/5">
+                        <div id="world-map" style="width: 100%; height: 350px;"></div>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-white/5 pb-4">
+                        <h3 class="text-lg font-semibold flex items-center gap-2 text-white">
+                            <i class="fa-solid fa-microchip text-primary"></i> Server Metrics
+                        </h3>
+                        <select id="health-mode" onchange="toggleHealthView()" class="bg-gray-900 text-gray-300 text-xs rounded-lg px-4 py-2 border border-gray-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary hover:bg-gray-800 cursor-pointer transition w-full sm:w-auto font-medium">
+                            <option value="live">Live View (Real-time)</option>
+                            <option value="history">7 Days History</option>
+                        </select>
+                    </div>
+                    
+                    <div id="view-live" class="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
+                        <div class="text-center relative">
+                            <div class="relative w-40 h-40 mx-auto">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gray-800" />
+                                    <circle id="cpu-ring" cx="80" cy="80" r="70" stroke="currentColor" stroke-width="12" fill="transparent" 
+                                            class="text-blue-500 transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(59,130,246,0.5)]" 
+                                            stroke-dasharray="439.82" stroke-dashoffset="439.82" stroke-linecap="round" />
+                                </svg>
+                                <div class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center skeleton rounded-full bg-transparent" id="cpu-skeleton">
+                                    <span id="cpu-text" class="text-4xl font-bold text-white tracking-tighter drop-shadow-lg">0%</span>
+                                    <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">CPU Load</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-400 font-medium">RAM Usage</span>
+                                    <span id="ram-text" class="font-mono text-primary font-bold">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden shadow-inner border border-white/5">
+                                    <div id="ram-bar" class="bg-gradient-to-r from-primary to-purple-600 h-3 rounded-full transition-all duration-500 relative" style="width: 0%">
+                                        <div class="absolute right-0 top-0 bottom-0 w-3 bg-white/30 animate-pulse"></div>
+                                    </div>
+                                </div>
+                                <p id="ram-detail" class="text-[10px] text-right mt-1.5 text-gray-500 font-mono tracking-wide">Loading...</p>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-400 font-medium">Disk Usage</span>
+                                    <span id="disk-text" class="font-mono text-green-400 font-bold">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden shadow-inner border border-white/5">
+                                    <div id="disk-bar" class="bg-gradient-to-r from-green-500 to-emerald-700 h-3 rounded-full transition-all duration-500 relative" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center">
+                            <div class="text-center p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl border border-white/10 w-full hover:border-white/20 transition shadow-xl">
+                                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">Health Status</p>
+                                <h2 id="health-status" class="text-3xl font-bold text-gray-500 skeleton h-10 w-36 mx-auto rounded-lg">...</h2>
+                                <div class="mt-4 flex justify-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                    <p class="text-xs text-gray-400">Worker Nodes Active</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="view-history" class="hidden h-72 w-full bg-white/5 rounded-xl p-4">
+                        <canvas id="healthHistoryChart"></canvas>
+                    </div>
+                </div>
+
+                <div id="logs-section">
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <h3 class="text-lg font-semibold flex items-center gap-2 text-white">
+                            <i class="fa-solid fa-terminal text-primary"></i> System Logs (Cluster)
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Auto-Scroll</span>
+                            <div class="relative inline-block w-8 h-4 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" id="auto-scroll-toggle" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="auto-scroll-toggle" class="toggle-label block overflow-hidden h-4 rounded-full bg-gray-700 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="log-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+                        </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const ADMIN_BASE = document.getElementById('admin-url-base').value;
+        let trendChartInstance = null;
+        let typeChartInstance = null;
+        let healthChartInstance = null;
+        let mapInstance = null;
+        let isFirstLoad = true;
+        
+        // Active Node Tracking
+        let activeNode = 'local'; 
+
+        // CONFIG: Define Sources (Web + 4 Workers)
+        // [UPDATED] Worker-4 Added
+        const logSources = ['web', 'worker-1', 'worker-2', 'worker-3', 'worker-4'];
+
+        // [UPDATED] State tracking for Glow Effect
+        let lastLogState = {}; 
+
+        // --- UI FUNCTIONS ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('backdrop');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function switchNode() {
+            const selector = document.getElementById('node-selector');
+            activeNode = selector.value;
+            
+            // Reset UI for loading feel
+            isFirstLoad = true;
+            document.getElementById('last-updated').innerText = "Switching...";
+            document.getElementById('monitoring-label').innerHTML = `
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span> 
+                Connecting to: <span class="text-gray-300 font-mono">${activeNode.toUpperCase()} Node...</span>`;
+                
+            refreshAll();
+        }
+
+        function removeSkeleton(elementIds) {
+            elementIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.remove('skeleton');
+                    el.classList.remove('text-transparent');
+                }
+            });
+            // Cleanup Containers
+            document.getElementById('trendChartContainer')?.classList.remove('skeleton', 'bg-white/5');
+            document.getElementById('typeChartContainer')?.classList.remove('skeleton', 'bg-white/5');
+            document.getElementById('cpu-skeleton')?.classList.remove('skeleton');
+            document.getElementById('map-container')?.classList.remove('skeleton', 'bg-white/5');
+        }
+
+        // --- NEW: BLOG REFRESH LOGIC ---
+        async function triggerBlogRefresh() {
+            const btn = document.getElementById('btn-blog-refresh');
+            const icon = document.getElementById('icon-blog-refresh');
+            
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-wait');
+            icon.classList.add('fa-spin');
+
+            try {
+                // Call API
+                const res = await fetch('/api/refresh-blog');
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    showToast('Blog Cache Updated Successfully!', 'success');
+                } else {
+                    showToast('Update Failed: ' + data.message, 'error');
+                }
+            } catch (err) {
+                console.error("Blog refresh failed:", err);
+                showToast('Network Error: Could not reach API', 'error');
+            } finally {
+                // Reset UI
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-wait');
+                    icon.classList.remove('fa-spin');
+                }, 1000);
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-[#1e293b]' : 'bg-[#1e293b]';
+            const borderColor = type === 'success' ? 'border-green-500' : 'border-red-500';
+            const iconColor = type === 'success' ? 'text-green-400' : 'text-red-400';
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation';
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 shadow-2xl shadow-black/50 transform translate-x-full transition-all duration-300 animate-slide-in ${bgColor} ${borderColor}`;
+            
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
+                <div>
+                    <p class="text-sm font-semibold text-gray-200">${type === 'success' ? 'Success' : 'Error'}</p>
+                    <p class="text-xs text-gray-400">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // --- 1. CHARTS ---
+        function initCharts() {
+            // Trend Line Chart
+            const ctx1 = document.getElementById('trendChart').getContext('2d');
+            trendChartInstance = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Jobs',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+                            gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+                            return gradient;
+                        },
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#3b82f6',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#3b82f6',
+                        pointHoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { mode: 'index', intersect: false } 
+                    },
+                    scales: {
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [4, 4] }, ticks: { color: '#64748b' }, beginAtZero: true },
+                        x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                    },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                }
+            });
+
+            // Type Doughnut Chart
+            const ctx2 = document.getElementById('typeChart').getContext('2d');
+            typeChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: { 
+                        legend: { position: 'right', labels: { color: '#cbd5e1', usePointStyle: true, padding: 20, font: { family: 'Inter' } } } 
+                    }
+                }
+            });
+        }
+
+        // --- 2. MAP & HEALTH VIEW ---
+        function toggleHealthView() {
+            const mode = document.getElementById('health-mode').value;
+            if (mode === 'live') {
+                document.getElementById('view-live').classList.remove('hidden');
+                document.getElementById('view-history').classList.add('hidden');
+            } else {
+                document.getElementById('view-live').classList.add('hidden');
+                document.getElementById('view-history').classList.remove('hidden');
+                loadHistoryChart();
+            }
+        }
+
+        async function loadHistoryChart() {
+            try {
+                const res = await fetch(`${ADMIN_BASE}/api/health/history`);
+                const data = await res.json();
+                
+                const ctx = document.getElementById('healthHistoryChart').getContext('2d');
+                if (healthChartInstance) healthChartInstance.destroy();
+
+                healthChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            { label: 'CPU %', data: data.cpu, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', tension: 0.4, fill: true, borderWidth: 2 },
+                            { label: 'RAM %', data: data.ram, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: true, borderWidth: 2 }
+                        ]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'top', labels: { color: '#cbd5e1' } } },
+                        scales: { 
+                            y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                            x: { grid: { display: false }, ticks: { color: '#64748b' } } 
+                        } 
+                    }
+                });
+            } catch (e) {
+                console.error("History fetch failed", e);
+            }
+        }
+
+        // --- 3. FETCH STATS ---
+        async function fetchStats() {
+            try {
+                const url = activeNode === 'local' 
+                    ? `${ADMIN_BASE}/api/stats` 
+                    : `/api/remote-stats`;
+
+                const res = await fetch(url);
+                const rawData = await res.json();
+
+                if(rawData.error) {
+                    document.getElementById('monitoring-label').innerHTML = `<span class="text-red-500">Connection Failed</span>`;
+                    return;
+                }
+
+                let data = activeNode === 'local' ? rawData : rawData.stats;
+                let nodeName = activeNode === 'local' ? "Localhost" : rawData.node_name;
+
+                document.getElementById('monitoring-label').innerHTML = `
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> 
+                    Monitoring: <span class="text-gray-300 font-mono font-bold">${nodeName}</span>`;
+
+                if (!data || !data.summary) return;
+
+                if (isFirstLoad) {
+                    removeSkeleton(['stat-total', 'stat-today', 'stat-failed', 'stat-status']);
+                }
+
+                document.getElementById('stat-total').innerText = data.summary.total.toLocaleString();
+                document.getElementById('stat-today').innerText = data.summary.today.toLocaleString();
+                document.getElementById('stat-failed').innerText = data.summary.failed.toLocaleString();
+
+                if (trendChartInstance) {
+                    trendChartInstance.data.labels = data.charts.trend_labels;
+                    trendChartInstance.data.datasets[0].data = data.charts.trend_data;
+                    trendChartInstance.update();
+                }
+
+                if (typeChartInstance) {
+                    typeChartInstance.data.labels = data.charts.type_distribution.map(i => i.name);
+                    typeChartInstance.data.datasets[0].data = data.charts.type_distribution.map(i => i.count);
+                    typeChartInstance.update();
+                }
+
+                if (data.charts.map_data) {
+                    updateMap(data.charts.map_data);
+                }
+                
+                if (data.charts.visitor_periods) {
+                    document.getElementById('vis-daily').innerText = data.charts.visitor_periods.daily.toLocaleString();
+                    document.getElementById('vis-weekly').innerText = data.charts.visitor_periods.weekly.toLocaleString();
+                    document.getElementById('vis-monthly').innerText = data.charts.visitor_periods.monthly.toLocaleString();
+                }
+
+                if (activeNode === 'remote' && rawData.health) {
+                    updateHealthUI(rawData.health);
+                }
+
+                const now = new Date();
+                document.getElementById('last-updated').innerText = now.toLocaleTimeString();
+
+            } catch (e) {
+                console.error("Stats fetch failed", e);
+            }
+        }
+
+        // --- MAP UPDATE ---
+        function updateMap(countryData) {
+            document.getElementById('map-container').classList.remove('skeleton', 'bg-white/5');
+            const total = Object.values(countryData).reduce((a, b) => a + b, 0);
+            const totalEl = document.getElementById('map-total-visitors');
+            if(totalEl) totalEl.innerText = total.toLocaleString();
+
+            if (!mapInstance) {
+                mapInstance = new jsVectorMap({
+                    selector: "#world-map",
+                    map: "world",
+                    backgroundColor: "transparent",
+                    zoomOnScroll: false,
+                    zoomButtons: true,
+                    regionStyle: {
+                        initial: { fill: "#334155", fillOpacity: 1, stroke: '#1e293b', strokeWidth: 0.5 },
+                        hover: { fill: "#3b82f6", fillOpacity: 1, cursor: 'pointer' },
+                        selected: { fill: "#1d4ed8" }
+                    },
+                    visualizeData: {
+                        scale: ["#60a5fa", "#1d4ed8"], 
+                        values: countryData
+                    },
+                    onRegionTooltipShow(event, tooltip, code) {
+                        const count = countryData[code] || 0;
+                        tooltip.element.innerHTML = `
+                            <div class="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg shadow-xl">
+                                <div class="flex items-center gap-2 mb-1 border-b border-slate-700 pb-1">
+                                    <span class="text-xs font-bold text-gray-300 uppercase">${tooltip.text()}</span>
+                                    <span class="text-[10px] text-gray-500">${code}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                    <span class="text-sm font-mono text-white font-bold">${count} Visitors</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            } else {
+                document.getElementById('world-map').innerHTML = "";
+                mapInstance = null;
+                updateMap(countryData); 
+            }
+        }
+
+        // --- 4. HEALTH ---
+        async function fetchHealth() {
+            if (document.getElementById('health-mode').value !== 'live') return;
+            if (activeNode === 'remote') return;
+
+            try {
+                const res = await fetch(`${ADMIN_BASE}/api/health`);
+                const data = await res.json();
+                updateHealthUI(data);
+            } catch (e) {
+                console.error("Health fetch failed", e);
+            }
+        }
+
+        function updateHealthUI(data) {
+            if(isFirstLoad) removeSkeleton(['cpu-skeleton']);
+
+            const radius = 70;
+            const circumference = 2 * Math.PI * radius;
+            const cpuOffset = circumference - (data.cpu_percent / 100) * circumference;
+            
+            document.getElementById('cpu-ring').style.strokeDashoffset = cpuOffset;
+            const ring = document.getElementById('cpu-ring');
+            const cpuText = document.getElementById('cpu-text');
+            
+            if(data.cpu_percent > 80) {
+                ring.classList.replace('text-blue-500', 'text-red-500');
+                cpuText.classList.add('text-red-500');
+            } else {
+                ring.classList.replace('text-red-500', 'text-blue-500');
+                cpuText.classList.remove('text-red-500');
+            }
+
+            document.getElementById('cpu-text').innerText = data.cpu_percent + '%';
+            
+            document.getElementById('ram-bar').style.width = data.ram_percent + '%';
+            document.getElementById('ram-text').innerText = data.ram_percent + '%';
+            document.getElementById('ram-detail').innerText = data.ram_detail;
+
+            document.getElementById('disk-bar').style.width = data.disk_percent + '%';
+            document.getElementById('disk-text').innerText = data.disk_percent + '%';
+
+            document.getElementById('cpu-mini-bar').style.width = data.cpu_percent + '%';
+
+            const statusEl = document.getElementById('health-status');
+            statusEl.classList.remove('skeleton', 'text-transparent', 'h-10', 'w-36', 'mx-auto');
+            
+            if (data.cpu_percent > 90 || data.ram_percent > 90) {
+                statusEl.innerText = "CRITICAL";
+                statusEl.className = "text-3xl font-bold text-red-500 animate-pulse drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]";
+            } else {
+                statusEl.innerText = "OPTIMAL";
+                statusEl.className = "text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600";
+            }
+        }
+
+        // --- 5. LOGS (DYNAMIC GRID) ---
+        function createLogBoxElement(source) {
+            const isWeb = source === 'web';
+            const icon = isWeb ? 'fa-globe' : 'fa-robot';
+            const title = isWeb ? 'Web Server' : source.replace('worker-', 'Worker Node #');
+            const color = isWeb ? 'primary' : 'purple-500';
+            const grid = document.getElementById('log-grid');
+
+            const html = `
+            <div id="log-box-${source}" class="glass rounded-2xl overflow-hidden shadow-2xl border border-gray-700 flex flex-col h-96 transition-all duration-300">
+                <div class="bg-[#1a1b26] px-4 py-3 flex items-center justify-between border-b border-gray-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-${color} shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid ${icon} text-gray-500"></i> ${title}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 opacity-60">
+                        <i class="fa-solid fa-terminal text-gray-400 text-[10px]"></i>
+                        <span class="text-[10px] font-mono text-gray-500">${source}.log</span>
+                    </div>
+                </div>
+                <div class="log-content bg-[#0f0f14] p-4 flex-1 overflow-y-auto font-mono text-[10px] md:text-xs text-gray-300 terminal-scroll leading-relaxed relative shadow-inner">
+                    <div class="text-gray-600 italic">Initializing stream...</div>
+                </div>
+            </div>`;
+            
+            grid.insertAdjacentHTML('beforeend', html);
+        }
+
+        async function fetchLogs() {
+            if (activeNode === 'remote') return;
+
+            const shouldAutoScroll = document.getElementById('auto-scroll-toggle').checked;
+
+            for (const source of logSources) {
+                // Ensure UI box exists
+                if (!document.getElementById(`log-box-${source}`)) {
+                    createLogBoxElement(source);
+                }
+
+                try {
+                    const res = await fetch(`${ADMIN_BASE}/api/logs?source=${source}`);
+                    const data = await res.json();
+                    
+                    const box = document.getElementById(`log-box-${source}`);
+                    const container = box.querySelector('.log-content');
+
+                    if (data.logs && data.logs.length > 0) {
+                        
+                        // --- 🌟 SMART GLOW LOGIC START ---
+                        const latestLogLine = data.logs[data.logs.length - 1];
+                        
+                        // If log content changed since last fetch
+                        if (lastLogState[source] !== latestLogLine) {
+                            // 1. Update State
+                            lastLogState[source] = latestLogLine;
+
+                            // 2. Add Glow Class
+                            box.classList.add('active-log-glow');
+
+                            // 3. Remove after 1.5s (Smooth fade out)
+                            setTimeout(() => {
+                                box.classList.remove('active-log-glow');
+                            }, 1500);
+                        }
+                        // --- 🌟 SMART GLOW LOGIC END ---
+
+                        container.innerHTML = data.logs.map(line => {
+                            let colorClass = "text-gray-400";
+                            let icon = "";
+                            
+                            if (line.includes("ERROR")) {
+                                colorClass = "text-red-400 font-bold bg-red-500/5 border-l-2 border-red-500 pl-2";
+                                icon = '<i class="fa-solid fa-circle-xmark mr-2"></i>';
+                            } else if (line.includes("WARNING")) {
+                                colorClass = "text-yellow-400 bg-yellow-500/5 border-l-2 border-yellow-500 pl-2";
+                                icon = '<i class="fa-solid fa-triangle-exclamation mr-2"></i>';
+                            } else if (line.includes("INFO")) {
+                                colorClass = "text-blue-300";
+                                icon = '<i class="fa-solid fa-circle-info mr-2 text-blue-500/50"></i>';
+                            } else if (line.includes("SUCCESS") || line.includes("Completed")) {
+                                colorClass = "text-green-400";
+                                icon = '<i class="fa-solid fa-check mr-2"></i>';
+                            }
+
+                            // Clean logs
+                            let formatted = line.replace(/ERROR/g, '').replace(/INFO/g, '').replace(/WARNING/g, '');
+                            return `<div class="font-mono py-0.5 hover:bg-white/5 transition-colors ${colorClass} flex items-center break-all">
+                                ${icon} <span>${formatted}</span>
+                            </div>`;
+                        }).join('');
+
+                        if (shouldAutoScroll) {
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Log fetch failed for ${source}`, e);
+                }
+            }
+            
+            if (isFirstLoad) isFirstLoad = false;
+        }
+
+        // --- INIT ---
+        function refreshAll() {
+            fetchStats();
+            fetchHealth();
+            fetchLogs();
+        }
+
+        window.onload = function() {
+            initCharts();
+            refreshAll();
+
+            // Auto Refresh Intervals
+            setInterval(fetchHealth, 2000); 
+            setInterval(fetchStats, 10000); 
+            setInterval(fetchLogs, 5000);   
+        };
+    </script>
+</body>
+</html>
